@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+import paho.mqtt.client
+import mqtt_config
+import time
+import json
+
+#Test in test/, check http://spacehub.somakeit.org.uk
+#for advice choosing a topic for production
+TOPIC = "test/onewire-temp"
+POLL_TIME = 3 #seconds
+#The 1-wire temperature sensor device has a serial number
+SENSOR_PATH = "/sys/bus/w1/devices/28-000001b73415/w1_slave"
+
+#Connect to a broker
+mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
+#Use real root certificates
+mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
+mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
+mqtt.connect(mqtt_config.server, port=mqtt_config.port)
+mqtt.loop_start()
+
+while True:
+    timestamp = int(time.time())
+
+    #get temp from sensor
+    f = open(SENSOR_PATH, "r")
+    for line in f:
+        pass
+    temp = float(line.split("=")[-1]) / 1000
+
+    message = json.dumps({"timestamp": timestamp, "temp": temp})
+
+    message="hello world"
+    print(str(mqtt.publish(TOPIC, payload=message, qos=1, retain=True)))
+    time.sleep(POLL_TIME)
