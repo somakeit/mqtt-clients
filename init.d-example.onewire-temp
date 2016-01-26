@@ -14,7 +14,7 @@
 SCRIPT=/home/name/mqtt-clients/onewire-temp
 RUNAS=name
 
-PIDFILE=/var/run/onewire-temparture.pid
+PIDFILE=/var/run/onewire-temp.pid
 
 start() {
   if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then

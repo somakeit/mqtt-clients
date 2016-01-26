@@ -31,5 +31,5 @@ while True:
 
     message = json.dumps({"timestamp": timestamp, "temp": temp})
 
-    print(str(mqtt.publish(TOPIC, payload=message, qos=1, retain=True)))
+    mqtt.publish(TOPIC, payload=message, qos=1, retain=True)
     time.sleep(POLL_TIME)
