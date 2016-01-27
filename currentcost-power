@@ -3,14 +3,16 @@
 import paho.mqtt.client
 import mqtt_config
 import time
+import xmltodict
 import json
+import serial
 
 #Test in test/, check http://spacehub.somakeit.org.uk
 #for advice choosing a topic for production
-TOPIC = "somakeit/space/main_room/temperature"
+TOPIC = "somakeit/space/power/main_room_ring/usage"
 POLL_TIME = 60 #seconds
-#The 1-wire temperature sensor device has a serial number
-SENSOR_PATH = "/sys/bus/w1/devices/28-000001b73415/w1_slave"
+SERIAL_PORT = "/dev/ttyUSB0"
+BAUD_RATE = 57600
 
 #Connect to a broker
 mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
@@ -20,16 +22,22 @@ mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
 mqtt.connect(mqtt_config.server, port=mqtt_config.port)
 mqtt.loop_start()
 
+#open the serial port
+ser = serial.Serial(SERIAL_PORT, BAUD_RATE)
+
 while True:
     timestamp = int(time.time())
 
-    #get temp from sensor
-    f = open(SENSOR_PATH, "r")
-    for line in f:
-        pass
-    temp = float(line.split("=")[-1]) / 1000
+    #get the next line from the meter
+    line = ser.readline()
 
-    message = json.dumps({"timestamp": timestamp, "temp": temp})
+    #convrt to sane data if we can
+    try:
+        data = xmltodict.parse(line)
+    except Exception:
+        continue
+
+    message = json.dumps({"timestamp": timestamp, "data": data})
 
     mqtt.publish(TOPIC, payload=message, qos=0, retain=True)
 
