@@ -10,7 +10,6 @@ import serial
 #Test in test/, check http://spacehub.somakeit.org.uk
 #for advice choosing a topic for production
 TOPIC = "somakeit/space/power/main_room_ring/usage"
-POLL_TIME = 60 #seconds
 SERIAL_PORT = "/dev/ttyUSB0"
 BAUD_RATE = 57600
 
@@ -37,8 +36,8 @@ while True:
     except Exception:
         continue
 
-    message = json.dumps({"timestamp": timestamp, "data": data})
+    data.update({"timestamp": timestamp})
+
+    message = json.dumps(data)
 
     mqtt.publish(TOPIC, payload=message, qos=0, retain=True)
-
-    time.sleep(POLL_TIME)
