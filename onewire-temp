@@ -8,7 +8,7 @@ import json
 #Test in test/, check http://spacehub.somakeit.org.uk
 #for advice choosing a topic for production
 TOPIC = "somakeit/space/main_room/temperature"
-POLL_TIME = 300 #seconds
+POLL_TIME = 60 #seconds
 #The 1-wire temperature sensor device has a serial number
 SENSOR_PATH = "/sys/bus/w1/devices/28-000001b73415/w1_slave"
 
