@@ -3,8 +3,8 @@ import socket
 import sys
 
 #Please ask for an application user and password for deployment
-user_name = ""
-password = ""
+user_name = "bracken_toad_publishers"
+password = "%0Mg2bYCWcn6"
 server = "spacehub.somakeit.org.uk"
 port = 1883
 

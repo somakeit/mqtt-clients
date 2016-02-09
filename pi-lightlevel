@@ -61,8 +61,8 @@ while True:
     #process the image
     image = Image.open(stream)
     bwimage = image.convert('L')
-    histogram = bwimage.histogram()
-    light = histogram.index(max(histogram))
+    data = (bwimage.getdata())
+    light = 1.0*sum(data)/len(data)
     del(stream)
     del(image)
     del(bwimage)
