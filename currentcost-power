@@ -41,3 +41,4 @@ while True:
     message = json.dumps(data)
 
     mqtt.publish(TOPIC, payload=message, qos=0, retain=True)
+
