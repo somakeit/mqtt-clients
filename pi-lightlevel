@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+
+import time
+import picamera
+from PIL import Image
+import paho.mqtt.client
+import mqtt_config
+import json
+import io
+import fractions
+
+#Test in test/, check http://spacehub.somakeit.org.uk
+#for advice choosing a topic for production
+TOPIC = "somakeit/space/main_room/lightlevel"
+POLL_TIME = 300 #seconds
+
+#Camera settings
+AWB_GAINS = (fractions.Fraction(77, 64), fractions.Fraction(471, 256))
+SHUTTER_SPEED = long(33164)
+ISO = long(1600)
+
+#Connect to a broker
+mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
+#Use real root certificates
+mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
+mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
+mqtt.connect(mqtt_config.server, port=mqtt_config.port)
+mqtt.loop_start()
+
+while True:
+    stream = io.BytesIO()
+    try:
+        camera = picamera.PiCamera()
+        camera.resolution = (320, 240)
+        camera.framerate = 30
+
+        # Fix everything
+        camera.shutter_speed = SHUTTER_SPEED
+        camera.exposure_mode = 'off'
+        camera.awb_mode = 'off'
+        camera.awb_gains = AWB_GAINS
+        camera.iso = ISO
+
+        #Capture a shot
+        camera.capture(stream, format='jpeg')
+
+        camera.close()
+        del(camera)
+
+    except Exception as e:
+        print "Failed to camera: " + str(e)
+        continue
+
+    #process the image
+    image = Image.open(stream)
+    histogram = image.histogram()
+    light = sum(histogram)/len(histogram)*1.0
+    del(stream)
+    del(image)
+
+    timestamp = time.time()
+    message = json.dumps({"timestamp": timestamp, "lumens": -1, "level": light})
+    mqtt.publish(TOPIC, payload=message, qos=0, retain=True)
+
+    time.sleep(POLL_TIME)
