@@ -18,8 +18,15 @@ mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=Tr
 #Use real root certificates
 mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
 mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
-mqtt.connect(mqtt_config.server, port=mqtt_config.port)
 mqtt.loop_start()
+while True:
+    try:
+        mqtt.connect(mqtt_config.server, port=mqtt_config.port)
+        break
+    except Exception as e:
+        print "failed to connecct: " + str(e)
+        time.sleep(60)
+        print "retrying.."
 
 #open the serial port
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE)
