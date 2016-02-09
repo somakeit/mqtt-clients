@@ -60,10 +60,12 @@ while True:
 
     #process the image
     image = Image.open(stream)
-    histogram = image.histogram()
-    light = sum(histogram)/len(histogram)*1.0
+    bwimage = image.convert('L')
+    histogram = bwimage.histogram()
+    light = histogram.index(max(histogram))
     del(stream)
     del(image)
+    del(bwimage)
 
     timestamp = time.time()
     message = json.dumps({"timestamp": timestamp, "lumens": -1, "level": light})
