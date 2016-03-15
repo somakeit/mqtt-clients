@@ -11,6 +11,7 @@
 # configure the following and copy this file to: /etc/init.d/smib
 # then run: update-rc.d smib defaults
 
+NAME=pi-lightlevel
 SCRIPT=/home/name/mqtt-clients/pi-lightlevel
 RUNAS=name
 
@@ -22,7 +23,7 @@ start() {
     return 1
   fi
   echo 'Starting service…' >&2
-  su -c "$SCRIPT 2>&1 | logger -t 'smib' & jobs -p" "$RUNAS" >"$PIDFILE"
+  su -c "$SCRIPT 2>&1 | logger -t '$NAME' & jobs -p" "$RUNAS" >"$PIDFILE"
   echo 'Service started' >&2
 }
 
