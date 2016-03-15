@@ -9,7 +9,7 @@ import serial
 
 #Test in test/, check http://spacehub.somakeit.org.uk
 #for advice choosing a topic for production
-TOPIC = "somakeit/space/power/main_room_ring/usage"
+TOPIC = "somakeit/space/power/usage"
 SERIAL_PORT = "/dev/ttyUSB0"
 BAUD_RATE = 57600
 
