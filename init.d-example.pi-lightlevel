@@ -8,7 +8,7 @@
 # Description:       mqtt client to publish ambient light level in the space
 ### END INIT INFO
 
-# configure the following and copy this file to: /etc/init.d/smib
+# configure the following and copy this file to: /etc/init.d/pi-lightlevel
 # then run: update-rc.d smib defaults
 
 NAME=pi-lightlevel

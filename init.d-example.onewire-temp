@@ -8,14 +8,14 @@
 # Description:       mqtt client to publish 1-wire temperature sensor data
 ### END INIT INFO
 
-# configure the following and copy this file to: /etc/init.d/smib
+# configure the following and copy this file to: /etc/init.d/onewire-temp
 # then run: update-rc.d smib defaults
 
 NAME=onewire-temp
 SCRIPT=/home/name/mqtt-clients/onewire-temp
 RUNAS=name
 
-PIDFILE=/var/run/onewire-temp.pid
+PIDFILE=/var/run/${NAME}.pid
 
 start() {
   if [ -f /var/run/$PIDFILE ] && kill -0 $(cat /var/run/$PIDFILE); then

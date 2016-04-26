@@ -8,14 +8,14 @@
 # Description:       mqtt client to publish current cost power data
 ### END INIT INFO
 
-# configure the following and copy this file to: /etc/init.d/smib
+# configure the following and copy this file to: /etc/init.d/currentcost-power
 # then run: update-rc.d smib defaults
 
 NAME=currentcost-power
 SCRIPT=/home/name/mqtt-clients/currentcost-power
 RUNAS=name
 
-PIDFILE=/var/run/currentcost-power.pid
+PIDFILE=/var/run/${NAME}.pid
 
 start() {
   if [ -f /var/run/$PIDFILE ] && kill -0 $(cat /var/run/$PIDFILE); then
