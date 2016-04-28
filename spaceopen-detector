@@ -32,7 +32,7 @@ def on_disconnect(client, userdata, rc):
     print "reconnecting.."
     connect()
 
-def on_connect(client, userdata, rc):
+def on_connect(client, userdata, flags, rc):
     if open:
         mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
     else:
