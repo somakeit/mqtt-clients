@@ -9,11 +9,8 @@ TOPIC = "somakeit/space/open"
 POLL_TIME = 1 #seconds
 IO_SWITCH = 11
 IO_LED = 13
-open = False
 
-#Connect to a broker
 mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
-#Use real root certificates
 mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
 mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
 mqtt.loop_start()
@@ -35,10 +32,28 @@ def on_disconnect(client, userdata, rc):
     print "reconnecting.."
     connect()
 
+def on_connect(client, userdata, rc):
+    if open:
+        mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
+    else:
+        mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
+
+mqtt.on_connect = on_connect
+mqtt.on_disconnect = on_disconnect
+
 gpio.setmode(gpio.BOARD)
 gpio.setup(IO_SWITCH, gpio.IN, pull_up_down=gpio.PUD_UP)
 gpio.setup(IO_LED, gpio.OUT)
 gpio.output(IO_LED, gpio.LOW)
+
+if gpio.input(IO_SWITCH) == 1:
+    open = False
+    gpio.output(IO_LED, gpio.LOW)
+    mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
+else:
+    open = True
+    gpio.output(IO_LED, gpio.HIGH)
+    mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
 
 while True:
     if open:
