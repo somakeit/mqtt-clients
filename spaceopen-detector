@@ -6,7 +6,7 @@ import time
 import RPi.GPIO as gpio
 
 TOPIC = "somakeit/space/open"
-POLL_TIME = 1 #seconds
+POLL_TIME = 0.05 #seconds
 IO_SWITCH = 11
 IO_LED = 13
 
