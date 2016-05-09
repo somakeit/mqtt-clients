@@ -1,0 +1,16 @@
+# Service file for use with systemd
+# Configure your options and copy this file to /etc/systemd/system/spaceopen-detector.service
+# Output will be sent to syslog
+[Unit]
+Description=Space Open Detector
+After=network.target
+
+[Service]
+WorkingDirectory=/home/user/mqtt-clients/
+ExecStart=/home/user/mqtt-clients/spaceopen-detector
+User=name
+Group=name
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

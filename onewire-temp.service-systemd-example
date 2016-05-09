@@ -1,0 +1,16 @@
+# Service file for use with systemd
+# Configure your options and copy this file to /etc/systemd/system/onewire-temp.service
+# Output will be sent to syslog
+[Unit]
+Description=Onewire Temp Sensor Cloient
+After=network.target
+
+[Service]
+WorkingDirectory=/home/user/mqtt-clients/
+ExecStart=/home/user/mqtt-clients/onewire-temp
+User=name
+Group=name
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
