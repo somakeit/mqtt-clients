@@ -18,6 +18,7 @@ mqtt.loop_start()
 def connect():
     while True:
         try:
+            print "Connecting to: " + mqtt_config.server + ":" str(mqtt_config.port)
             mqtt.connect(mqtt_config.server, port=mqtt_config.port)
             break
         except Exception as e:
@@ -32,12 +33,6 @@ def on_disconnect(client, userdata, rc):
     print "reconnecting.."
     connect()
 
-def on_connect(client, userdata, flags, rc):
-    if open:
-        mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
-    else:
-        mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
-
 mqtt.on_connect = on_connect
 mqtt.on_disconnect = on_disconnect
 
@@ -49,10 +44,12 @@ gpio.output(IO_LED, gpio.LOW)
 if gpio.input(IO_SWITCH) == 1:
     open = False
     gpio.output(IO_LED, gpio.LOW)
+    print "Space open at init"
     mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
 else:
     open = True
     gpio.output(IO_LED, gpio.HIGH)
+    print "Space closed at init"
     mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
 
 while True:
@@ -60,11 +57,13 @@ while True:
         if gpio.input(IO_SWITCH) == 1:
             open = False
             gpio.output(IO_LED, gpio.LOW)
+            print "Space closed"
             mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
     else:
         if gpio.input(IO_SWITCH) == 0:
             open = True
             gpio.output(IO_LED, gpio.HIGH)
+            print "Space open"
             mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
 
     time.sleep(POLL_TIME)
