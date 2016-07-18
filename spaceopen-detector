@@ -33,7 +33,6 @@ def on_disconnect(client, userdata, rc):
     print "reconnecting.."
     connect()
 
-mqtt.on_connect = on_connect
 mqtt.on_disconnect = on_disconnect
 
 gpio.setmode(gpio.BOARD)
