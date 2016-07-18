@@ -18,7 +18,7 @@ mqtt.loop_start()
 def connect():
     while True:
         try:
-            print "Connecting to: " + mqtt_config.server + ":" str(mqtt_config.port)
+            print "Connecting to: " + mqtt_config.server + ":" + str(mqtt_config.port)
             mqtt.connect(mqtt_config.server, port=mqtt_config.port)
             break
         except Exception as e:
