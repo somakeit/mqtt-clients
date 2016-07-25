@@ -31,7 +31,7 @@ connect()
 
 def on_disconnect(client, userdata, rc):
     print "reconnecting.."
-    connect()
+    mqtt.reconnect()
 
 mqtt.on_disconnect = on_disconnect
 
