@@ -16,7 +16,7 @@ mqtt.connect(mqtt_config.server, port=mqtt_config.port)
 
 def on_disconnect(client, userdata, rc):
     print 'reconnecting..'
-    mqtt.connect(mqtt_config.server, port=mqtt_config.port)
+    mqtt.reconnect()
 
 def on_connect(client, userdata, flags, rc):
     mqtt.subscribe(TOPIC, qos=1)
