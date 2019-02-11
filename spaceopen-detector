@@ -56,7 +56,7 @@ def publish_openness():
     else:
         gpio.output(IO_LED, gpio.HIGH)
         mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
-        if !open:
+        if not open:
             print "Space open"
         open = True
 
