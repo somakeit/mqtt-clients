@@ -22,47 +22,44 @@ def connect():
             mqtt.connect(mqtt_config.server, port=mqtt_config.port)
             break
         except Exception as e:
-            print "failed to connecct: " + str(e)
+            print "Failed to connecct: " + str(e)
             time.sleep(60)
-            print "retrying.."
-    mqtt.will_set('somakeit/space/open', payload='false', qos=1, retain=True)
-    print "connected."
+            print "Retrying.."
 connect()
 
 def on_disconnect(client, userdata, rc):
-    print "reconnecting.."
+    print "Reconnecting.."
     mqtt.reconnect()
 
 mqtt.on_disconnect = on_disconnect
+
+def on_connect(client, userdate, flags, rc):
+    mqtt.will_set('somakeit/space/open', payload='false', qos=1, retain=True)
+    print "Connected"
+
+mqtt.on_connect = on_connect
 
 gpio.setmode(gpio.BOARD)
 gpio.setup(IO_SWITCH, gpio.IN, pull_up_down=gpio.PUD_UP)
 gpio.setup(IO_LED, gpio.OUT)
 gpio.output(IO_LED, gpio.LOW)
 
-if gpio.input(IO_SWITCH) == 1:
-    open = False
-    gpio.output(IO_LED, gpio.LOW)
-    print "Space open at init"
-    mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
-else:
-    open = True
-    gpio.output(IO_LED, gpio.HIGH)
-    print "Space closed at init"
-    mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
+open = False
+
+def publish_openness():
+    if gpio.input(IO_SWITCH) == 1:
+        gpio.output(IO_LED, gpio.LOW)
+        mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
+        if open:
+            print "Space closed"
+        open = False
+    else:
+        gpio.output(IO_LED, gpio.HIGH)
+        mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
+        if !open:
+            print "Space open"
+        open = True
 
 while True:
-    if open:
-        if gpio.input(IO_SWITCH) == 1:
-            open = False
-            gpio.output(IO_LED, gpio.LOW)
-            print "Space closed"
-            mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
-    else:
-        if gpio.input(IO_SWITCH) == 0:
-            open = True
-            gpio.output(IO_LED, gpio.HIGH)
-            print "Space open"
-            mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
-
     time.sleep(POLL_TIME)
+    publish_openness()
