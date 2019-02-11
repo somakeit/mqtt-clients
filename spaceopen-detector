@@ -10,7 +10,7 @@ POLL_TIME = 0.05 #seconds
 IO_SWITCH = 11
 IO_LED = 13
 
-open = False
+space_open = False
 
 mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
 mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
@@ -47,20 +47,20 @@ gpio.setup(IO_LED, gpio.OUT)
 gpio.output(IO_LED, gpio.LOW)
 
 def publish_openness():
-    global open
+    global space_open
 
     if gpio.input(IO_SWITCH) == 1:
         gpio.output(IO_LED, gpio.LOW)
         mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
-        if open:
+        if space_open:
             print "Space closed"
-        open = False
+        space_open = False
     else:
         gpio.output(IO_LED, gpio.HIGH)
         mqtt.publish(TOPIC, payload='1', qos=1, retain=True)
-        if not open:
+        if not space_open:
             print "Space open"
-        open = True
+        space_open = True
 
 while True:
     time.sleep(POLL_TIME)
