@@ -17,18 +17,6 @@ mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
 mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
 mqtt.loop_start()
 
-def connect():
-    while True:
-        try:
-            print "Connecting to: " + mqtt_config.server + ":" + str(mqtt_config.port)
-            mqtt.connect(mqtt_config.server, port=mqtt_config.port)
-            break
-        except Exception as e:
-            print "Failed to connecct: " + str(e)
-            time.sleep(60)
-            print "Retrying.."
-connect()
-
 def on_disconnect(client, userdata, rc):
     print "Reconnecting.."
     mqtt.reconnect()
@@ -40,6 +28,18 @@ def on_connect(client, userdate, flags, rc):
     print "Connected"
 
 mqtt.on_connect = on_connect
+
+def connect():
+    while True:
+        try:
+            print "Connecting to: " + mqtt_config.server + ":" + str(mqtt_config.port)
+            mqtt.connect(mqtt_config.server, port=mqtt_config.port)
+            break
+        except Exception as e:
+            print "Failed to connecct: " + str(e)
+            time.sleep(60)
+            print "Retrying.."
+connect()
 
 gpio.setmode(gpio.BOARD)
 gpio.setup(IO_SWITCH, gpio.IN, pull_up_down=gpio.PUD_UP)
