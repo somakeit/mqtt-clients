@@ -10,6 +10,8 @@ POLL_TIME = 0.05 #seconds
 IO_SWITCH = 11
 IO_LED = 13
 
+open = False
+
 mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
 mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
 mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
@@ -43,8 +45,6 @@ gpio.setmode(gpio.BOARD)
 gpio.setup(IO_SWITCH, gpio.IN, pull_up_down=gpio.PUD_UP)
 gpio.setup(IO_LED, gpio.OUT)
 gpio.output(IO_LED, gpio.LOW)
-
-open = False
 
 def publish_openness():
     if gpio.input(IO_SWITCH) == 1:
