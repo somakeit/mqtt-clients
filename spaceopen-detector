@@ -47,6 +47,8 @@ gpio.setup(IO_LED, gpio.OUT)
 gpio.output(IO_LED, gpio.LOW)
 
 def publish_openness():
+    global open
+
     if gpio.input(IO_SWITCH) == 1:
         gpio.output(IO_LED, gpio.LOW)
         mqtt.publish(TOPIC, payload='0', qos=1, retain=True)
