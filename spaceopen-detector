@@ -15,6 +15,7 @@ space_open = False
 mqtt = paho.mqtt.client.Client(client_id=mqtt_config.client_id, clean_session=True)
 mqtt.tls_set(("/etc/ssl/certs/ca-certificates.crt"))
 mqtt.username_pw_set(mqtt_config.user_name, mqtt_config.password)
+mqtt.will_set('somakeit/space/open', payload='false', qos=1, retain=True)
 mqtt.loop_start()
 
 def on_disconnect(client, userdata, rc):
@@ -24,7 +25,6 @@ def on_disconnect(client, userdata, rc):
 mqtt.on_disconnect = on_disconnect
 
 def on_connect(client, userdate, flags, rc):
-    mqtt.will_set('somakeit/space/open', payload='false', qos=1, retain=True)
     print "Connected"
 
 mqtt.on_connect = on_connect
